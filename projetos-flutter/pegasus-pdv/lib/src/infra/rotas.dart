@@ -94,6 +94,10 @@ class Rotas {
 			case '/produtoLista':
 			  return MaterialPageRoute(builder: (_) => const ProdutoListaPage());
 
+        // CFOP
+			case '/cfopLista':
+			  return MaterialPageRoute(builder: (_) => const CfopListaPage());
+
       ////////////////////////////////////////////////////////// 
       /// COMPRAS
       //////////////////////////////////////////////////////////

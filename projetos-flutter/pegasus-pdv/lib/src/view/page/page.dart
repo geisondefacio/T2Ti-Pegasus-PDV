@@ -81,6 +81,9 @@ export 'package:pegasus_pdv/src/view/page/cadastros/produto_grupo/produto_grupo_
 export 'package:pegasus_pdv/src/view/page/cadastros/produto_subgrupo/produto_subgrupo_lista_page.dart';
 export 'package:pegasus_pdv/src/view/page/cadastros/produto_subgrupo/produto_subgrupo_persiste_page.dart';
 
+export 'package:pegasus_pdv/src/view/page/cadastros/cfop/cfop_lista_page.dart';
+export 'package:pegasus_pdv/src/view/page/cadastros/cfop/cfop_persiste_page.dart';
+
 
 // Compras
 export 'package:pegasus_pdv/src/view/page/compras/pedido/compra_pedido_cabecalho_lista_page.dart';

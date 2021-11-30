@@ -223,7 +223,11 @@ class MenuCadastros extends StatelessWidget {
                         label: "Tipo Pagamento",
                         circleColor: Colors.orange,
                         rota: "/pdvTipoPagamentoLista"),
-                    terceiroBotao: null,
+                    terceiroBotao: BotaoMenu(
+                        icon: FontAwesomeIcons.fileInvoice,
+                        label: "CFOP",
+                        circleColor: Colors.green,
+                        rota: "/cfopLista"),
                     quartoBotao: null,
                   ),                  
                 ],

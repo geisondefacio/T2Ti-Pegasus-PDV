@@ -36,5 +36,6 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 export 'package:pegasus_pdv/src/service/cadastros/usuario_service.dart';
 export 'package:pegasus_pdv/src/service/cadastros/empresa_service.dart';
+export 'package:pegasus_pdv/src/service/cadastros/cfop_service.dart';
 export 'package:pegasus_pdv/src/service/nfce/nfce_acbr_service.dart';
 export 'package:pegasus_pdv/src/service/nfce/nfce_service.dart';

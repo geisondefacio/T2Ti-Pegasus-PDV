@@ -40,6 +40,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:pegasus_pdv/src/model/model.dart';
+import 'package:pegasus_pdv/src/service/cadastros/cfop_service.dart';
 
 import 'package:pegasus_pdv/src/infra/biblioteca.dart';
 
@@ -85,6 +87,8 @@ class Sessao {
   static PdvVendaCabecalho? vendaAtual = PdvVendaCabecalho(id: null);
   static List<VendaDetalhe> listaVendaAtualDetalhe = [];
   static List<PdvTipoPagamento>? listaTipoPagamento = [];
+  static List<Cfop>? listaCfop = [];
+  static List<CfopModel>? listaCfopRemoto = [];
   static List<PdvTotalTipoPagamento> listaDadosPagamento = [];
   static List<ContasReceberMontado> listaParcelamento = []; // guarda o parcelamento atual da venda para ser impresso no recibo
   static RetornoJsonErro? objetoJsonErro; // objeto de erro estático que armazena o último erro ocorrido na aplicação
@@ -141,6 +145,16 @@ class Sessao {
     nfcePlanoPagamento = await db.nfcePlanoPagamentoDao.consultarPlanoAtivo(); 
     listaTipoPagamento = await db.pdvTipoPagamentoDao.consultarLista(); // pega os tipos de pagamento e poe numa lista
 
+    // CFOP
+    CfopService servico = CfopService();
+    listaCfopRemoto = await (servico
+        .consultarLista()); // pega os CFOPs do Servidor na Retaguarda e poe numa lista
+    listaCfop = await db.cfopDao
+        .consultarLista(); // pega os CFOPs do servidor local e poe numa lista
+    if (listaCfopRemoto?.length != listaCfop?.length) {
+      await popularCfopLocal(context);
+    }
+
     // módulo Food
     final _listaCnae = await db.empresaCnaeDao.consultarLista();
     for (var cnae in _listaCnae) {
@@ -158,6 +172,22 @@ class Sessao {
     if (kDebugMode && Biblioteca.isDesktop()) {
       await _gerarArquivoEnvProtegido();  
     }
+  }
+
+  /// popula os CFOP para a sessão
+  static Future popularCfop(BuildContext context) async {
+    listaCfop =
+        await db.cfopDao.consultarLista(); // pega os CFOPs e poe numa lista
+  }
+
+  /// popula os CFOP no Banco de Dados Local
+  static Future popularCfopLocal(BuildContext context) async {
+    listaCfopRemoto?.forEach((element) async {
+      Cfop cfop = Cfop.fromJson(element.toJson);
+      await db.cfopDao.inserir(cfop);
+    });
+    listaCfop =
+        await db.cfopDao.consultarLista(); // pega os CFOPs e poe numa lista
   }
 
   static void fecharDialogBoxEspera(BuildContext context) {

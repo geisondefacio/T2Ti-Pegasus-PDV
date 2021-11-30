@@ -10,6 +10,7 @@ include 'pdv/PdvPlanoPagamento.php';
 // Cadastros
 include 'cadastros/Empresa.php';
 include 'cadastros/AcbrMonitorPorta.php';
+include 'cadastros/Cfop.php';
 
 // NF-e
 include 'nfe/NfeConfiguracao.php';

@@ -1,6 +1,7 @@
-/*
-Title: T2Ti ERP Pegasus                                                                
-Description: DAO relacionado à tabela [CFOP] 
+<?php
+/*******************************************************************************
+Title: T2Ti ERP 3.0
+Description: Model relacionado à tabela [CFOP] 
                                                                                 
 The MIT License                                                                 
                                                                                 
@@ -33,81 +34,93 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'package:moor/moor.dart';
+declare(strict_types=1);
 
-import 'package:pegasus_pdv/src/database/database.dart';
-import 'package:pegasus_pdv/src/database/database_classes.dart';
+class Cfop extends EloquentModel implements \JsonSerializable
+{
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'CFOP';
 
-part 'cfop_dao.g.dart';
-
-@UseDao(tables: [
-          Cfops,
-		])
-class CfopDao extends DatabaseAccessor<AppDatabase> with _$CfopDaoMixin {
-  final AppDatabase db;
-
-  CfopDao(this.db) : super(db);
-
-  List<Cfop>? listaCfop; // será usada para popular a grid na janela do CFOP
-
-  Future<List<Cfop>?> consultarLista() async {
-    listaCfop = await select(cfops).get();
-    return listaCfop;
-  }
-
-  Future<List<Cfop>?> consultarListaFiltro(String campo, String valor) async {
-    listaCfop = await (customSelect("SELECT * FROM PDV_TIPO_PAGAMENTO WHERE " + campo + " like '%" + valor + "%'", 
-                                readsFrom: { cfops }).map((row) {
-                                  return Cfop.fromData(row.data, db);  
-                                }).get());
-    return listaCfop;
-  }
-
-
-  Future<Cfop?> consultarObjetoFiltro(String campo, String valor) async {
-    return (customSelect("SELECT * FROM CFOP WHERE " + campo + " = '" + valor + "'", 
-                                readsFrom: { cfops }).map((row) {
-                                  return Cfop.fromData(row.data, db);  
-                                }).getSingleOrNull());
-  }  
-  
-  Stream<List<Cfop>> observarLista() => select(cfops).watch();
-
-  Future<Cfop?> consultarObjeto(int pId) {
-    return (select(cfops)..where((t) => t.id.equals(pId))).getSingleOrNull();
-  } 
-
-  Future<int> inserir(Insertable<Cfop> pObjeto) {
-    return transaction(() async {
-      final idInserido = await into(cfops).insert(pObjeto);
-      return idInserido;
-    });    
-  } 
-
-  Future<bool> alterar(Insertable<Cfop> pObjeto) {
-    return transaction(() async {
-      return update(cfops).replace(pObjeto);
-    });    
-  } 
-
-  Future<int> excluir(Insertable<Cfop> pObjeto) {
-    return transaction(() async {
-      return delete(cfops).delete(pObjeto);
-    });    
-  }
-
-static List<String> campos = <String>[
-		'ID', 
-		'CODIGO', 
-		'DESCRICAO', 
-		'APLICACAO', 
-	];
+    /**
+     * Eager Loading - Relacionamentos que devem ser sempre carregados por padrão
+     *
+     * @var array
+     */
 	
-	static List<String> colunas = <String>[
-		'Id', 
-		'Codigo', 
-		'Descricao', 
-		'Aplicacao', 
-	];
-  
+    
+    /**
+     * Gets e Sets
+     */
+    public function getIdAttribute() 
+	{
+		return $this->attributes['ID'];
+	}
+
+	public function setIdAttribute($id) 
+	{
+		$this->attributes['ID'] = $id;
+	}
+
+    public function getCodigoAttribute() 
+	{
+		return $this->attributes['CODIGO'];
+	}
+
+	public function setCodigoAttribute($codigo) 
+	{
+		$this->attributes['CODIGO'] = $codigo;
+	}
+
+    public function getDescricaoAttribute() 
+	{
+		return $this->attributes['DESCRICAO'];
+	}
+
+	public function setDescricaoAttribute($descricao) 
+	{
+		$this->attributes['DESCRICAO'] = $descricao;
+	}
+
+    public function getAplicacaoAttribute() 
+	{
+		return $this->attributes['APLICACAO'];
+	}
+
+	public function setAplicacaoAttribute($aplicacao) 
+	{
+		$this->attributes['APLICACAO'] = $aplicacao;
+	}
+
+
+
+    public function mapear($objeto)
+    {
+        if (isset($objeto)) {
+            isset($objeto->id) ? $this->setIdAttribute($objeto->id) : $this->setIdAttribute(null);
+
+			$this->setCodigoAttribute($objeto->codigo);
+			$this->setDescricaoAttribute($objeto->descricao);
+			$this->setAplicacaoAttribute($objeto->aplicacao);
+
+			// vincular objetos
+        }
+    }
+
+    /**
+     * Serialization
+     * {@inheritdoc}
+     */
+    public function jsonSerialize()
+    {
+        return [
+			'id' => $this->getIdAttribute(),
+			'codigo' => $this->getCodigoAttribute(),
+            'descricao' => $this->getDescricaoAttribute(),
+            'aplicacao' => $this->getAplicacaoAttribute(),
+        ];
+    }
 }

@@ -20,6 +20,14 @@ $app->put('/empresa/{id}', \EmpresaController::class . ALTERAR);
 $app->delete('/empresa/{id}', \EmpresaController::class . EXCLUIR);
 $app->options('/empresa[/{id}]', \ControllerBase::class . BROWSER_OPTION_RETORNAR_RESPONSE);
 
+// cfop
+$app->get('/cfop[/]', \CfopController::class . CONSULTAR_LISTA);
+$app->get('/cfop/{id}', \CfopController::class . CONSULTAR_OBJETO);
+$app->post('/cfop', \CfopController::class . INSERIR);
+$app->put('/cfop/{id}', \CfopController::class . ALTERAR);
+$app->delete('/cfop/{id}', \CfopController::class . EXCLUIR);
+$app->options('/cfop[/{id}]', \CfopController::class . BROWSER_OPTION_RETORNAR_RESPONSE);
+
 ///////////////////////////////
 // PDV
 ///////////////////////////////

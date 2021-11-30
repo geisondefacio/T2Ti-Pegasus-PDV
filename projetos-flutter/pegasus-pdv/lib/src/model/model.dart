@@ -39,6 +39,7 @@ export 'package:pegasus_pdv/src/model/cadastros/usuario_model.dart';
 export 'package:pegasus_pdv/src/model/cadastros/empresa_model.dart';
 export 'package:pegasus_pdv/src/model/cadastros/empresa_consulta_publica.dart';
 export 'package:pegasus_pdv/src/model/cadastros/pdv_tipo_plano_model.dart';
+export 'package:pegasus_pdv/src/model/cadastros/cfop_model.dart';
 
 // nfce
 export 'package:pegasus_pdv/src/model/nfce/nfce_plano_pagamento_model.dart';
