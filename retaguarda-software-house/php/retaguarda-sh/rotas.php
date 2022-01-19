@@ -49,7 +49,7 @@ $app->options('/pdv-plano-pagamento[/{id}]', \ControllerBase::class . BROWSER_OP
 //$app->get('/nfe-configuracao/', \NfeConfiguracaoController::class . CONSULTAR_LISTA);
 $app->get('/nfe-configuracao/{id}', \NfeConfiguracaoController::class . CONSULTAR_OBJETO);
 $app->get('/nfe-configuracao', \NfeConfiguracaoController::class . ':retornarArquivosXmlPeriodo');
-$app->post('/nfe-configuracao/{/cnpj}', \NfeConfiguracaoController::class . ':atualizar');
+$app->post('/nfe-configuracao/{cnpj}', \NfeConfiguracaoController::class . ':atualizar');
 $app->post('/nfe-configuracao[/]', \NfeConfiguracaoController::class . ':atualizarCertificado');
 $app->put('/nfe-configuracao/{id}', \NfeConfiguracaoController::class . ALTERAR);
 $app->delete('/nfe-configuracao/{id}', \NfeConfiguracaoController::class . EXCLUIR);

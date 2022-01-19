@@ -1,7 +1,7 @@
 <?php
 /*******************************************************************************
 Title: T2Ti ERP 3.0
-Description: Controller relacionado à tabela [PDV_TIPO_PLANO] 
+Description: Controller relacionado à tabela [CFOP] 
                                                                                 
 The MIT License                                                                 
                                                                                 
@@ -34,7 +34,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-class PdvTipoPlanoController extends ControllerBase
+class CfopController extends ControllerBase
 {
 
     public function consultarLista($request, $response, $args)
@@ -42,25 +42,25 @@ class PdvTipoPlanoController extends ControllerBase
         try {
             if (count($request->getQueryParams()) > 0) {
                 $filtro = new Filtro($request->getQueryParams()['filter']);
-                $listaConsulta = PdvTipoPlanoService::consultarListaFiltroValor($filtro);
+                $listaConsulta = CfopService::consultarListaFiltroValor($filtro);
             } else {
-                $listaConsulta = PdvTipoPlanoService::consultarLista();
+                $listaConsulta = CfopService::consultarLista();
             }
             $retorno = json_encode($listaConsulta);
             $response->getBody()->write($retorno);
             return $response->withHeader('Content-Type', 'application/json');
         } catch (Exception $e) {
-            return parent::tratarErro($response, 500, 'Erro no Servidor [Consultar Lista PdvTipoPlano]', $e);
+            return parent::tratarErro($response, 500, 'Erro no Servidor [Consultar Lista Cfop]', $e);
         }
     }
 
     public function consultarObjeto($request, $response, $args)
     {
         try {
-            $objeto = PdvTipoPlanoService::consultarObjeto($args['id']);
+            $objeto = CfopService::consultarObjeto($args['id']);
 
             if ($objeto == null) {
-                return parent::tratarErro($response, 404, 'Registro não localizado [Consultar Objeto PdvTipoPlano]', null);
+                return parent::tratarErro($response, 404, 'Registro não localizado [Consultar Objeto Cfop]', null);
             } else {
                 $retorno = json_encode($objeto);
                 $response->getBody()->write($retorno);
@@ -68,7 +68,7 @@ class PdvTipoPlanoController extends ControllerBase
                     ->withHeader('Content-Type', 'application/json');
             }
         } catch (Exception $e) {
-            return parent::tratarErro($response, 500, 'Erro no Servidor [Consultar Objeto PdvTipoPlano]', $e);
+            return parent::tratarErro($response, 500, 'Erro no Servidor [Consultar Objeto Cfop]', $e);
         }
     }
 
@@ -80,13 +80,13 @@ class PdvTipoPlanoController extends ControllerBase
 
             // valida o objeto
             if (!isset($objJson)) {
-                return parent::tratarErro($response, 400, 'Objeto inválido [Incluir PdvTipoPlano] - objeto não enviado.', null);
+                return parent::tratarErro($response, 400, 'Objeto inválido [Incluir Cfop] - objeto não enviado.', null);
             }
 
-            $objEntidade = new PdvTipoPlano();
+            $objEntidade = new Cfop();
 			$objEntidade->mapear($objJson);
 
-			PdvTipoPlanoService::inserir($objJson, $objEntidade);
+			CfopService::salvar($objEntidade);
 			
             $retorno = json_encode($objEntidade);
             $response->getBody()->write($retorno);
@@ -95,7 +95,7 @@ class PdvTipoPlanoController extends ControllerBase
                 ->withStatus(201)
                 ->withHeader('Content-Type', 'application/json');
         } catch (Exception $e) {
-            return parent::tratarErro($response, 500, 'Erro no Servidor [Inserir PdvTipoPlano]', $e);
+            return parent::tratarErro($response, 500, 'Erro no Servidor [Inserir Cfop]', $e);
         }
     }
 
@@ -105,42 +105,41 @@ class PdvTipoPlanoController extends ControllerBase
 			// pegar o objeto da requisição
 			$objJson = json_decode($request->getBody());
 
-            $objBanco = PdvTipoPlanoService::consultarObjeto($objJson->id);
+            $objBanco = CfopService::consultarObjeto($objJson->id);
 
             if ($objBanco == null) {
-                return parent::tratarErro($response, 400, 'Objeto inválido [Alterar PdvTipoPlano]', null);
+                return parent::tratarErro($response, 400, 'Objeto inválido [Alterar Cfop]', null);
             } else {
-                $objEntidade = new PdvTipoPlano();
-				$objEntidade->mapear($objJson);
+				$objBanco->mapear($objJson);
 				
-				PdvTipoPlanoService::alterar($objJson, $objEntidade);
+				CfopService::salvar($objBanco);
 				
-                $retorno = json_encode($objEntidade);
+                $retorno = json_encode($objBanco);
                 $response->getBody()->write($retorno);
                 return $response
                     ->withHeader('Content-Type', 'application/json');
             }
         } catch (Exception $e) {
-            return parent::tratarErro($response, 500, 'Objeto inválido [Alterar PdvTipoPlano]', $e);
+            return parent::tratarErro($response, 500, 'Objeto inválido [Alterar Cfop]', $e);
         }
     }
 
     public function excluir($request, $response, $args)
     {
         try {
-            $objBanco = PdvTipoPlanoService::consultarObjeto($args['id']);
+            $objBanco = CfopService::consultarObjeto($args['id']);
 
             if ($objBanco == null) {
-                return parent::tratarErro($response, 400, 'Objeto inválido [Excluir PdvTipoPlano]', null);
+                return parent::tratarErro($response, 400, 'Objeto inválido [Excluir Cfop]', null);
             } else {
-                PdvTipoPlanoService::excluir($objBanco);
+                CfopService::excluir($objBanco);
 
                 return $response
                     ->withStatus(200)
                     ->withHeader('Content-Type', 'application/json');
             }
         } catch (Exception $e) {
-            return parent::tratarErro($response, 500, 'Objeto inválido [Excluir PdvTipoPlano]', $e);
+            return parent::tratarErro($response, 500, 'Objeto inválido [Excluir Cfop]', $e);
         }
     }
 }

@@ -892,7 +892,7 @@ class _EmpresaPersistePageState extends State<EmpresaPersistePage> {
           nomeFantasia: empresaModel.fantasia,
           razaoSocial: empresaModel.nome,
           dataConstituicao: DateTime.tryParse(empresaModel.abertura!),
-          // email: empresaModel.email,
+          //email: empresaModel.email,
           cep: empresaModel.cep!.replaceAll('.', ''),
           uf: empresaModel.uf,
           logradouro: empresaModel.logradouro,

@@ -1,7 +1,7 @@
-/*
-Title: T2Ti ERP 3.0                                                              
-Description: Model Transiente para o cliente - Tipo do Plano do PDV
-tabela existe apenas na retaguarda da SH
+<?php
+/*******************************************************************************
+Title: T2Ti ERP 3.0
+Description: Service relacionado à tabela [CFOP] 
                                                                                 
 The MIT License                                                                 
                                                                                 
@@ -34,59 +34,35 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'dart:convert';
 
-class PdvTipoPlanoModel {
-	int? id;
-	String? modulo; //G=GRATIS - F=FISCAL - P=PREMIUM 
-	String? plano; //M=MENSAL - S=SEMESTRAL - A=ANUAL 
-	String? moduloFiscal; // NFC - SAT - MFE
-  double? valor;
+use Illuminate\Database\Capsule\Manager as DB;
 
-	PdvTipoPlanoModel({
-			this.id,
-			this.modulo,
-			this.plano,
-			this.moduloFiscal,
-			this.valor = 0.0,
-		});
-
-	PdvTipoPlanoModel.fromJson(Map<String, dynamic> jsonDados) {
-		id = jsonDados['id'];
-		modulo = jsonDados['modulo'];
-		plano = getPlano(jsonDados['plano']);
-		moduloFiscal = jsonDados['moduloFiscal'];
-		valor = jsonDados['valor'] != null ? double.parse(jsonDados['valor']) : 0.0;
-	}
-
-	Map<String, dynamic> get toJson {
-		Map<String, dynamic> jsonDados = <String, dynamic>{};
-
-		jsonDados['id'] = id ?? 0;
-		jsonDados['modulo'] = modulo;
-		jsonDados['plano'] = plano;
-		jsonDados['moduloFiscal'] = moduloFiscal;
-		jsonDados['valor'] = valor;
-	
-		return jsonDados;
-	}
-	
-  getPlano(String? plano) {
-    switch (plano) {
-      case 'M':
-        return 'Mensal';
-      case 'S':
-        return 'Semestral';
-      case 'A':
-        return 'Anual';
-      default:
-        return null;
-      }
+class CfopService extends ServiceBase
+{
+    public static function consultarLista()
+    {
+		return Cfop::select()->limit(QUANTIDADE_POR_PAGINA)->get();
     }
 
-	String objetoEncodeJson(PdvTipoPlanoModel objeto) {
-	  final jsonDados = objeto.toJson;
-	  return json.encode(jsonDados);
-	}
+    public static function consultarListaFiltroValor($filtro)
+    {
+		return Cfop::whereRaw($filtro->where)->get();
+    }
+
+    public static function consultarObjeto(int $id)
+    {
+		return Cfop::find($id);
+    }
+
+    public static function salvar($objeto)
+    {
+        $objeto->save();
+    }
+
+    public static function excluir($objeto)
+    {
+        $objeto->delete();
+    }
+		
 	
 }

@@ -377,8 +377,8 @@ class Empresa extends EloquentModel implements \JsonSerializable
 			$this->setDataConstituicaoAttribute($objeto->dataConstituicao);
 			$this->setTipoAttribute($objeto->tipo);
 			$this->setEmailAttribute($objeto->email);
-			$this->setAliquotaPisAttribute($objeto->aliquotaPis);
-			$this->setAliquotaCofinsAttribute($objeto->aliquotaCofins);
+			//$this->setAliquotaPisAttribute($objeto->aliquotaPis);
+			//$this->setAliquotaCofinsAttribute($objeto->aliquotaCofins);
 			$this->setLogradouroAttribute($objeto->logradouro);
 			$this->setNumeroAttribute($objeto->numero);
 			$this->setComplementoAttribute($objeto->complemento);
@@ -390,7 +390,7 @@ class Empresa extends EloquentModel implements \JsonSerializable
 			$this->setContatoAttribute($objeto->contato);
 			$this->setCodigoIbgeCidadeAttribute($objeto->codigoIbgeCidade);
 			$this->setCodigoIbgeUfAttribute($objeto->codigoIbgeUf);
-			$this->setLogotipoAttribute($objeto->logotipo);
+			//$this->setLogotipoAttribute($objeto->logotipo);
 			$this->setRegistradoAttribute($objeto->registrado);
 			$this->setNaturezaJuridicaAttribute($objeto->naturezaJuridica);
 			$this->setSimeiAttribute($objeto->simei);
@@ -420,8 +420,8 @@ class Empresa extends EloquentModel implements \JsonSerializable
 			'dataConstituicao' => $this->getDataConstituicaoAttribute(),
 			'tipo' => $this->getTipoAttribute(),
 			'email' => $this->getEmailAttribute(),
-			'aliquotaPis' => $this->getAliquotaPisAttribute(),
-			'aliquotaCofins' => $this->getAliquotaCofinsAttribute(),
+			//'aliquotaPis' => $this->getAliquotaPisAttribute(),
+			//'aliquotaCofins' => $this->getAliquotaCofinsAttribute(),
 			'logradouro' => $this->getLogradouroAttribute(),
 			'numero' => $this->getNumeroAttribute(),
 			'complemento' => $this->getComplementoAttribute(),
@@ -433,7 +433,7 @@ class Empresa extends EloquentModel implements \JsonSerializable
 			'contato' => $this->getContatoAttribute(),
 			'codigoIbgeCidade' => $this->getCodigoIbgeCidadeAttribute(),
 			'codigoIbgeUf' => $this->getCodigoIbgeUfAttribute(),
-			'logotipo' => $this->getLogotipoAttribute(),
+			//'logotipo' => $this->getLogotipoAttribute(),
 			'registrado' => $this->getRegistradoAttribute(),
 			'naturezaJuridica' => $this->getNaturezaJuridicaAttribute(),
 			'simei' => $this->getSimeiAttribute(),

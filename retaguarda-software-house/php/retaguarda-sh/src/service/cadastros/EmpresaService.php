@@ -48,19 +48,25 @@ class EmpresaService extends ServiceBase
 		return Empresa::whereRaw($filtro->where)->get();
     }
 
-    public static function consultarObjeto($filtro)
+    public static function consultarObjeto($cnpj)
     {
-		return Empresa::whereRaw($filtro->where)->get();
+		$filtro = 'CNPJ = "' . $cnpj . '"';
+		return Empresa::whereRaw($filtro)->get();
     }
 
-    public static function consultarObjetoFiltro(int $id)
+    public static function consultarObjetoFiltro($id)
     {
 		$retorno = Empresa::find($id);
-		if ($retorno->count() > 0) {
-			return $retorno[0];
+		if ($retorno != null){
+			if ($retorno->count() > 0) {
+				return $retorno[0];
+			} else {
+				return null;
+			}	
 		} else {
 			return null;
-		}		
+		}	
+				
     }
 
 	public static function inserir($objJson, $objEntidade)
@@ -75,8 +81,8 @@ class EmpresaService extends ServiceBase
 	{
 	    DB::transaction(function () use ($objJson, $objBanco) {
 	        $objBanco->save();
-	        EmpresaService::excluirFilhos($objBanco);
-	        EmpresaService::atualizarFilhos($objJson, $objBanco);
+	        //EmpresaService::excluirFilhos($objBanco);
+	        //EmpresaService::atualizarFilhos($objJson, $objBanco);
 	    });
 	}
 	

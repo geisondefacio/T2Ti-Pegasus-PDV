@@ -57,7 +57,7 @@ class EmpresaController extends ControllerBase
     public function consultarObjeto($request, $response, $args)
     {
         try {
-            $objeto = EmpresaService::consultarObjeto($args['id']);
+            $objeto = EmpresaService::consultarObjeto($args['cnpj']);
 
             if ($objeto == null) {
                 return parent::tratarErro($response, 404, 'Registro não localizado [Consultar Objeto Empresa]', null);
@@ -121,16 +121,17 @@ class EmpresaController extends ControllerBase
 			// pegar o objeto da requisição
 			$objJson = json_decode($request->getBody());
 
-            $objBanco = EmpresaService::consultarObjeto($objJson->id);
+            $objBanco = EmpresaService::consultarObjeto($objJson->cnpj);
 
             if ($objBanco == null) {
                 return parent::tratarErro($response, 400, 'Objeto inválido [Alterar Empresa]', null);
             } else {
-				$objBanco->mapear($objJson);
+                $objEntidade = new Empresa();
+				$objEntidade->mapear($objJson);
 				
-				EmpresaService::alterar($objJson, $objBanco);
+				EmpresaService::alterar($objJson, $objEntidade);
 				
-                $retorno = json_encode($objBanco);
+                $retorno = json_encode($objEntidade);
                 $response->getBody()->write($retorno);
                 return $response
                     ->withHeader('Content-Type', 'application/json');

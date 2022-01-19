@@ -60,7 +60,6 @@ class Sessao {
   static Sessao? _this;
   Sessao._() : super();
 
-
 // #region objetos globais
   static Filtro filtroGlobal = Filtro();
   static String tokenJWT = '';
@@ -68,13 +67,17 @@ class Sessao {
   // objetos PDV
   static late AppDatabase db;
 
-  static dynamic statusCaixa; 
+  static dynamic statusCaixa;
   static bool abriuDialogBoxEspera = false;
-  static late String retornoJsonLookup; // será usado para popular a grid da janela de lookup
+  static late String
+      retornoJsonLookup; // será usado para popular a grid da janela de lookup
   static String? retornoJsonNfce; //objeto retornado pelo ACBrMonitor
-  static late String caminhoBancoDados; // guarda o caminho para o banco de dados
-  static late String ultimoIniNfceEnviado; // guarda a string do último arquivo INI de NFC-e enviado para o ACBrMonitor
-  static bool cnaePermiteModuloFood = false; // se for true, o sistema permite a utilização do módulo Food
+  static late String
+      caminhoBancoDados; // guarda o caminho para o banco de dados
+  static late String
+      ultimoIniNfceEnviado; // guarda a string do último arquivo INI de NFC-e enviado para o ACBrMonitor
+  static bool cnaePermiteModuloFood =
+      false; // se for true, o sistema permite a utilização do módulo Food
 
   static PdvMovimento? movimento;
   static Empresa? empresa;
@@ -86,10 +89,14 @@ class Sessao {
   static List<VendaDetalhe> listaVendaAtualDetalhe = [];
   static List<PdvTipoPagamento>? listaTipoPagamento = [];
   static List<PdvTotalTipoPagamento> listaDadosPagamento = [];
-  static List<ContasReceberMontado> listaParcelamento = []; // guarda o parcelamento atual da venda para ser impresso no recibo
-  static RetornoJsonErro? objetoJsonErro; // objeto de erro estático que armazena o último erro ocorrido na aplicação
-  static ComandaMontado? comandaMontadoAtual; // TODO: usado para o relatório - remover quando os relatórios forem arrumados (centralizar e agrupar o código repetitivo dos relatórios)
-  static List<Municipio> listaMunicipios = []; // carrega uma lista de municipios com base no arquivo csv que está em assets
+  static List<ContasReceberMontado> listaParcelamento =
+      []; // guarda o parcelamento atual da venda para ser impresso no recibo
+  static RetornoJsonErro?
+      objetoJsonErro; // objeto de erro estático que armazena o último erro ocorrido na aplicação
+  static ComandaMontado?
+      comandaMontadoAtual; // TODO: usado para o relatório - remover quando os relatórios forem arrumados (centralizar e agrupar o código repetitivo dos relatórios)
+  static List<Municipio> listaMunicipios =
+      []; // carrega uma lista de municipios com base no arquivo csv que está em assets
 
   /*
    [0] = codigo
@@ -105,8 +112,9 @@ class Sessao {
    [10] = chave
    [11] = versao
    [12] = fonte
-  */ 
-  static late List<List<dynamic>> tabelaIbpt; // vamos carregar os dados do arquivo CSV
+  */
+  static late List<List<dynamic>>
+      tabelaIbpt; // vamos carregar os dados do arquivo CSV
 
   /*
    [0] = ibge
@@ -117,8 +125,9 @@ class Sessao {
    [5] = nome_sem_acento
    [6] = ddd
    [7] = siafi
-  */ 
-  static late List<List<dynamic>> tabelaMunicipios; // vamos carregar os dados do arquivo CSV
+  */
+  static late List<List<dynamic>>
+      tabelaMunicipios; // vamos carregar os dados do arquivo CSV
 
 // #endregion objetos globais
 
@@ -127,50 +136,60 @@ class Sessao {
     db = Provider.of<AppDatabase>(context, listen: false);
     if (movimento == null) {
       await tratarMovimento();
-    }    
-    empresa = await db.empresaDao.consultarObjeto(1); // pega a empresa - deve ter apenas um registro no banco de dados
+    }
+    empresa = await db.empresaDao.consultarObjeto(
+        1); // pega a empresa - deve ter apenas um registro no banco de dados
     // se o logo estiver nulo, insere um logo padrão e o usuário poderá alterar depois na tela de cadastro da empresa
     if (empresa!.logotipo == null) {
-      final logotipo = (await rootBundle.load('assets/images/sua_logo.png')).buffer.asUint8List();
+      final logotipo = (await rootBundle.load('assets/images/sua_logo.png'))
+          .buffer
+          .asUint8List();
       empresa = empresa!.copyWith(
         logotipo: logotipo,
       );
       await db.empresaDao.alterar(Sessao.empresa!, false);
     }
-    configuracaoPdv = await db.pdvConfiguracaoDao.consultarObjeto(1); // pega a configuracao - deve ter apenas um registro no banco de dados
-    configuracaoNfce = await db.nfeConfiguracaoDao.consultarObjeto(1); // pega a configuracao da NFC-e - deve ter apenas um registro no banco de dados
-    numeroNfce = await db.nfeNumeroDao.consultarObjeto(1); // pega o numero da nfc-e
-    nfcePlanoPagamento = await db.nfcePlanoPagamentoDao.consultarPlanoAtivo(); 
-    listaTipoPagamento = await db.pdvTipoPagamentoDao.consultarLista(); // pega os tipos de pagamento e poe numa lista
+    configuracaoPdv = await db.pdvConfiguracaoDao.consultarObjeto(
+        1); // pega a configuracao - deve ter apenas um registro no banco de dados
+    configuracaoNfce = await db.nfeConfiguracaoDao.consultarObjeto(
+        1); // pega a configuracao da NFC-e - deve ter apenas um registro no banco de dados
+    numeroNfce =
+        await db.nfeNumeroDao.consultarObjeto(1); // pega o numero da nfc-e
+    nfcePlanoPagamento = await db.nfcePlanoPagamentoDao.consultarPlanoAtivo();
+    listaTipoPagamento = await db.pdvTipoPagamentoDao
+        .consultarLista(); // pega os tipos de pagamento e poe numa lista
 
     // módulo Food
     final _listaCnae = await db.empresaCnaeDao.consultarLista();
     for (var cnae in _listaCnae) {
-      if (cnae.codigo!.startsWith('56')) { // Alimentação
-        cnaePermiteModuloFood = true;  
+      if (cnae.codigo!.startsWith('56')) {
+        // Alimentação
+        cnaePermiteModuloFood = true;
       }
     }
 
     // carrega ibpt
     final arquivoIbptCsv = await rootBundle.loadString('assets/text/ibpt.csv');
-    tabelaIbpt = const CsvToListConverter().convert(arquivoIbptCsv, fieldDelimiter: ';');
+    tabelaIbpt =
+        const CsvToListConverter().convert(arquivoIbptCsv, fieldDelimiter: ';');
 
     // carrega municipios
-    final arquivoMunicipiosCsv = await rootBundle.loadString('assets/text/municipios.csv');
-    tabelaMunicipios = const CsvToListConverter().convert(arquivoMunicipiosCsv, fieldDelimiter: ';');
+    final arquivoMunicipiosCsv =
+        await rootBundle.loadString('assets/text/municipios.csv');
+    tabelaMunicipios = const CsvToListConverter()
+        .convert(arquivoMunicipiosCsv, fieldDelimiter: ';');
     listaMunicipios.clear();
-    for (var i = 0; i < tabelaMunicipios.length; i++) {
+    for (var i = 9; i < (tabelaMunicipios[0].length - 1); i += 9) {
       Municipio municipio = Municipio(
-        nome: Sessao.tabelaMunicipios[i][3],
-        uf: Sessao.tabelaMunicipios[i][1],
-        codigoIbge: Sessao.tabelaMunicipios[i][0].toString(),
+        nome: Sessao.tabelaMunicipios[0][i + 3],
+        uf: Sessao.tabelaMunicipios[0][i + 1],
+        codigoIbge: Sessao.tabelaMunicipios[0][i].toString(),
       );
       listaMunicipios.add(municipio);
     }
 
-
     if (kDebugMode && Biblioteca.isDesktop()) {
-      await _gerarArquivoEnvProtegido();  
+      await _gerarArquivoEnvProtegido();
     }
   }
 
@@ -184,7 +203,7 @@ class Sessao {
     Navigator.popUntil(context, ModalRoute.withName('/'));
     listaDadosPagamento = [];
     listaParcelamento = [];
-    statusCaixa = StatusCaixa.vendaEmAndamento;      
+    statusCaixa = StatusCaixa.vendaEmAndamento;
     refrescarCaixaCallBack!();
   }
 
@@ -194,16 +213,25 @@ class Sessao {
   /// 03-se existir um movimento
   /// 03.1-verifica se o movimento é de outro dia
   /// 03.1.1 - se for um movimento de outro dia, encerra movimento e abre outro
-  /// 03.1.2 - se for um movimento do mesmo dia, atribui para o movimento da sessão 
+  /// 03.1.2 - se for um movimento do mesmo dia, atribui para o movimento da sessão
   static Future tratarMovimento() async {
-    movimento = await db.pdvMovimentoDao.consultarObjeto('A'); 
+    movimento = await db.pdvMovimentoDao.consultarObjeto('A');
     if (movimento == null) {
-      movimento = PdvMovimento(id: null, dataAbertura: DateTime.now(), horaAbertura: Biblioteca.formatarHora(DateTime.now()), statusMovimento: 'A');
+      movimento = PdvMovimento(
+          id: null,
+          dataAbertura: DateTime.now(),
+          horaAbertura: Biblioteca.formatarHora(DateTime.now()),
+          statusMovimento: 'A');
       movimento = await db.pdvMovimentoDao.iniciarMovimento(movimento!);
     } else {
-      if (Biblioteca.formatarData(movimento!.dataAbertura) != Biblioteca.formatarData(DateTime.now())) {
+      if (Biblioteca.formatarData(movimento!.dataAbertura) !=
+          Biblioteca.formatarData(DateTime.now())) {
         await db.pdvMovimentoDao.encerrarMovimento(movimento!);
-        movimento = PdvMovimento(id: null, dataAbertura: DateTime.now(), horaAbertura: Biblioteca.formatarHora(DateTime.now()), statusMovimento: 'A');
+        movimento = PdvMovimento(
+            id: null,
+            dataAbertura: DateTime.now(),
+            horaAbertura: Biblioteca.formatarHora(DateTime.now()),
+            statusMovimento: 'A');
         movimento = await db.pdvMovimentoDao.iniciarMovimento(movimento!);
       }
     }
@@ -212,19 +240,37 @@ class Sessao {
   static Future _gerarArquivoEnvProtegido() async {
     var conteudoEnvProtegido = '';
 
-    conteudoEnvProtegido += 'SENTRY_DNS=' + Constantes.encrypter.encrypt(Constantes.sentryDns!, iv: Constantes.iv).base64 + '\n';
-    conteudoEnvProtegido += 'LINGUAGEM_SERVIDOR=' + Constantes.encrypter.encrypt(Constantes.linguagemServidor!, iv: Constantes.iv).base64 + '\n';
-    conteudoEnvProtegido += 'ENDERECO_SERVIDOR=' + Constantes.encrypter.encrypt(Constantes.enderecoServidor!, iv: Constantes.iv).base64 + '\n';
+    conteudoEnvProtegido += 'SENTRY_DNS=' +
+        Constantes.encrypter
+            .encrypt(Constantes.sentryDns!, iv: Constantes.iv)
+            .base64 +
+        '\n';
+    conteudoEnvProtegido += 'LINGUAGEM_SERVIDOR=' +
+        Constantes.encrypter
+            .encrypt(Constantes.linguagemServidor!, iv: Constantes.iv)
+            .base64 +
+        '\n';
+    conteudoEnvProtegido += 'ENDERECO_SERVIDOR=' +
+        Constantes.encrypter
+            .encrypt(Constantes.enderecoServidor!, iv: Constantes.iv)
+            .base64 +
+        '\n';
     if (Constantes.complementoEnderecoServidor!.isEmpty) {
       conteudoEnvProtegido += 'COMPLEMENTO_ENDERECO_SERVIDOR=\n';
     } else {
-      conteudoEnvProtegido += 'COMPLEMENTO_ENDERECO_SERVIDOR=' + Constantes.encrypter.encrypt(Constantes.complementoEnderecoServidor!, iv: Constantes.iv).base64 + '\n';
+      conteudoEnvProtegido += 'COMPLEMENTO_ENDERECO_SERVIDOR=' +
+          Constantes.encrypter
+              .encrypt(Constantes.complementoEnderecoServidor!,
+                  iv: Constantes.iv)
+              .base64 +
+          '\n';
     }
-    conteudoEnvProtegido += 'PORTA_SERVIDOR=' + Constantes.encrypter.encrypt(Constantes.portaServidor!, iv: Constantes.iv).base64;
+    conteudoEnvProtegido += 'PORTA_SERVIDOR=' +
+        Constantes.encrypter
+            .encrypt(Constantes.portaServidor!, iv: Constantes.iv)
+            .base64;
 
     final File file = File('.env-cifrado');
     await file.writeAsString(conteudoEnvProtegido);
   }
-
-
 }

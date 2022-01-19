@@ -44,7 +44,7 @@ class ServiceBase {
                               : {"content-type": "application/json", "authorization": "Bearer " + Sessao.tokenJWT};
 
   // Servidor ERP
-  static final String _endpoint = Constantes.enderecoServidor! + ':' + Constantes.portaServidor!;// + Constantes.complementoEnderecoServidor;
+  static final String _endpoint = Constantes.enderecoServidor! + ':' + Constantes.portaServidor! + Constantes.complementoEnderecoServidor!;
   get endpoint => _endpoint;
   static var _url = '';
   get url => _url;

@@ -1,7 +1,7 @@
-/*
-Title: T2Ti ERP 3.0                                                              
-Description: Model Transiente para o cliente - Tipo do Plano do PDV
-tabela existe apenas na retaguarda da SH
+<?php
+/*******************************************************************************
+Title: T2Ti ERP 3.0
+Description: Model relacionado à tabela [CFOP] 
                                                                                 
 The MIT License                                                                 
                                                                                 
@@ -34,59 +34,93 @@ OTHER DEALINGS IN THE SOFTWARE.
 @author Albert Eije (alberteije@gmail.com)                    
 @version 1.0.0
 *******************************************************************************/
-import 'dart:convert';
+declare(strict_types=1);
 
-class PdvTipoPlanoModel {
-	int? id;
-	String? modulo; //G=GRATIS - F=FISCAL - P=PREMIUM 
-	String? plano; //M=MENSAL - S=SEMESTRAL - A=ANUAL 
-	String? moduloFiscal; // NFC - SAT - MFE
-  double? valor;
+class Cfop extends EloquentModel implements \JsonSerializable
+{
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'CFOP';
 
-	PdvTipoPlanoModel({
-			this.id,
-			this.modulo,
-			this.plano,
-			this.moduloFiscal,
-			this.valor = 0.0,
-		});
-
-	PdvTipoPlanoModel.fromJson(Map<String, dynamic> jsonDados) {
-		id = jsonDados['id'];
-		modulo = jsonDados['modulo'];
-		plano = getPlano(jsonDados['plano']);
-		moduloFiscal = jsonDados['moduloFiscal'];
-		valor = jsonDados['valor'] != null ? double.parse(jsonDados['valor']) : 0.0;
+    /**
+     * Eager Loading - Relacionamentos que devem ser sempre carregados por padrão
+     *
+     * @var array
+     */
+	
+    
+    /**
+     * Gets e Sets
+     */
+    public function getIdAttribute() 
+	{
+		return $this->attributes['ID'];
 	}
 
-	Map<String, dynamic> get toJson {
-		Map<String, dynamic> jsonDados = <String, dynamic>{};
-
-		jsonDados['id'] = id ?? 0;
-		jsonDados['modulo'] = modulo;
-		jsonDados['plano'] = plano;
-		jsonDados['moduloFiscal'] = moduloFiscal;
-		jsonDados['valor'] = valor;
-	
-		return jsonDados;
+	public function setIdAttribute($id) 
+	{
+		$this->attributes['ID'] = $id;
 	}
-	
-  getPlano(String? plano) {
-    switch (plano) {
-      case 'M':
-        return 'Mensal';
-      case 'S':
-        return 'Semestral';
-      case 'A':
-        return 'Anual';
-      default:
-        return null;
-      }
+
+    public function getCodigoAttribute() 
+	{
+		return $this->attributes['CODIGO'];
+	}
+
+	public function setCodigoAttribute($codigo) 
+	{
+		$this->attributes['CODIGO'] = $codigo;
+	}
+
+    public function getDescricaoAttribute() 
+	{
+		return $this->attributes['DESCRICAO'];
+	}
+
+	public function setDescricaoAttribute($descricao) 
+	{
+		$this->attributes['DESCRICAO'] = $descricao;
+	}
+
+    public function getAplicacaoAttribute() 
+	{
+		return $this->attributes['APLICACAO'];
+	}
+
+	public function setAplicacaoAttribute($aplicacao) 
+	{
+		$this->attributes['APLICACAO'] = $aplicacao;
+	}
+
+
+
+    public function mapear($objeto)
+    {
+        if (isset($objeto)) {
+            isset($objeto->id) ? $this->setIdAttribute($objeto->id) : $this->setIdAttribute(null);
+
+			$this->setCodigoAttribute($objeto->codigo);
+			$this->setDescricaoAttribute($objeto->descricao);
+			$this->setAplicacaoAttribute($objeto->aplicacao);
+
+			// vincular objetos
+        }
     }
 
-	String objetoEncodeJson(PdvTipoPlanoModel objeto) {
-	  final jsonDados = objeto.toJson;
-	  return json.encode(jsonDados);
-	}
-	
+    /**
+     * Serialization
+     * {@inheritdoc}
+     */
+    public function jsonSerialize()
+    {
+        return [
+			'id' => $this->getIdAttribute(),
+			'codigo' => $this->getCodigoAttribute(),
+            'descricao' => $this->getDescricaoAttribute(),
+            'aplicacao' => $this->getAplicacaoAttribute(),
+        ];
+    }
 }
